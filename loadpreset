@@ -1,0 +1,184 @@
+#!/bin/bash
+
+export C_CF="255 80 0"
+export C_NOCF="0 0 200"
+#export C_NOCF="0 20 0"
+#export C_NOCF="50 10 0"
+export C_HILLE="255 0 0"
+export C_JULIA="204 255 0"
+export C_MARTHE="0 255 102"
+export C_CLAAS="0 102 255"
+export C_GISO="204 0 255"
+export C_WHILLE="64 0 0"
+export C_WJULIA="51 64 0"
+export C_WMARTHE="0 64 25"
+export C_WCLAAS="0 25 64"
+export C_WGISO="51 0 64"
+#export C_WHILLE="191 96 96"
+#export C_WJULIA="172 191 96"
+#export C_WMARTHE="96 191 134"
+#export C_WCLAAS="96 134 191"
+#export C_WGISO="172 96 191"
+
+# FCB1010 preset layout:
+# Licht, weiss
+p[13]="default lichtweiss"
+
+# Licht, bunt
+p[14]="default lichtbunt"
+
+# Stop & Licht Umbau
+p[15]="onlymute umbau mute"
+c[15]="sleep 3;send_osc 3819 /transport_stop;sleep 1;send_osc 3819 /save_state"
+
+p[16]="onlymute lichtsaal"
+
+p[17]="lichtaus"
+p[18]="lichtaushell"
+p[19]="stockfinster"
+
+#Start preset GUI
+c[20]="killall octave;octave -q --eval 'presetgui;uiwait(gcf)'"
+
+# Stop-Taste Bank 1
+p[12]="saalaus mute"
+c[12]="sleep 3;send_osc 3819 /transport_stop;sleep 1;send_osc 3819 /save_state"
+
+# Stop-Taste Bank 2
+p[29]="saalaus mute"
+c[29]="sleep 3;send_osc 3819 /transport_stop;sleep 1;send_osc 3819 /save_state"
+
+# Stop-Taste Reich
+p[33]="saalaus mute"
+c[33]="sleep 3;send_osc 3819 /transport_stop;sleep 1;send_osc 3819 /save_state"
+
+# Stop-Taste 2 Bank 3
+p[36]="saalaus mute"
+c[36]="sleep 3;send_osc 3819 /transport_stop;sleep 1;send_osc 3819 /save_state"
+
+p[37]="onlymute"
+p[38]="onlyunmute"
+
+p[39]="default lichtbunt zugabe"
+c[39]="send_osc 3819 /locate 438279810 0;send_osc 3819 /access_action Transport/record-roll"
+
+
+# Stop-Taste Bank 7
+p[75]="saalaus mute"
+c[75]="sleep 3;send_osc 3819 /transport_stop;sleep 1;send_osc 3819 /save_state"
+
+# Stop-Taste Bank 9
+p[95]="saalaus mute"
+c[95]="sleep 3;send_osc 3819 /transport_stop;sleep 1;send_osc 3819 /save_state"
+
+
+
+#[25] Palestrina: Vestiva i colli, intro
+p[25]="default vestiva_intro"
+c[25]="send_osc 3819 /locate 140973 0;send_osc 3819 /access_action Transport/record-roll"
+
+#[26] Palestrina: Vestiva i colli, phase-out
+#p[26]="vestiva_phaseout"
+#[26] Stimmen
+p[26]="stimmen"
+#c[26]="send_osc 3819 /locate 71000342 0;send_osc 3819 /access_action Transport/record-roll"
+
+#[70] Lee Santana: Music for Viols
+p[60]="default santana_prelude"
+c[60]="send_osc 3819 /locate 153335700 0;send_osc 3819 /save_state;send_osc 3819 /access_action Transport/record-roll"
+p[51]="santana_prelude1"
+p[52]="santana_prelude2"
+p[53]="santana_chaconne_01 lichtbunt"
+p[54]="santana_chaconne_02"
+p[55]="santana_chaconne_03"
+p[56]="santana_chaconne_04"
+p[57]="santana_chaconne_05 lichtbunt"
+p[58]="santana_chaconne_06"
+p[59]="santana_chaconne_07"
+p[50]="santana_chaconne_07b"
+p[41]="santana_chaconne_08"
+p[42]="santana_chaconne_08a"
+p[43]="santana_chaconne_08b"
+p[44]="santana_chaconne_08c"
+p[45]="santana_chaconne_09"
+p[46]="santana_chaconne_11"
+p[47]="santana_chaconne_11a"
+p[48]="santana_chaconne_11b"
+p[49]="santana_chaconne_11c"
+p[40]="santana_chaconne_12"
+p[31]="santana_chaconne_12a"
+p[32]="santana_postlude"
+
+#[21] Stockhausen virgo
+p[21]="default stockhausen_virgo"
+c[21]="send_osc 3819 /locate 305216776 0;send_osc 3819 /access_action Transport/record-roll"
+p[22]="stockhausen_virgoaus"
+
+#[30] Stockhausen gemini
+p[30]="default lichtbunt stockhausen_gemini"
+c[30]="send_osc 3819 /locate 285845776 0;send_osc 3819 /access_action Transport/record-roll"
+
+#[34] Picforth: In Nomine
+p[34]="default picforth_init picforth_sus1"
+c[34]="send_osc 3819 /locate 0 0;send_osc 3819 /access_action Transport/record-roll"
+p[35]="picforth_sus0"
+
+#[27] Reich:
+p[27]="default reich_init"
+c[27]="sleep 3;octave -q --eval reichgui & sleep 1;send_osc 3819 /locate 19770906 0;send_osc 3819 /access_action Transport/record-roll;"
+c[11]="octave -q --eval reichgui"
+
+#[90] Bach Passacaglia:
+p[70]="default bach_a"
+c[70]="send_osc 3819 /locate 345678912 0;send_osc 3819 /access_action Transport/record-roll"
+p[61]="bach_b"
+p[62]="bach_c"
+p[63]="bach_d"
+p[64]="bach_e"
+p[65]="bach_a1"
+p[66]="bach_b1"
+p[67]="bach_c1"
+p[68]="bach_a2"
+p[69]="vestiva_phaseout"
+#p[68]="bach_137"
+#p[69]="bach_169"
+
+##[22] Tye - rubum guem:
+#p[22]="default lichtbunt tye_rubum"
+#c[22]="send_osc 3819 /locate 126787500 0;send_osc 3819 /access_action Transport/record-roll"
+
+#[23] Strogers In Nomine:
+p[23]="default strogers"
+c[23]="send_osc 3819 /locate 142814281 0;send_osc 3819 /access_action Transport/record-roll"
+
+#[24] Tye - Trust:
+p[24]="default tye_trust"
+c[24]="send_osc 3819 /locate 112203500 0;send_osc 3819 /access_action Transport/record-roll"
+
+#[28] John Cage: Five
+p[28]="default"
+c[28]="send_osc 3819 /locate 595175005 0;send_osc 3819 /access_action Transport/record-roll"
+
+
+# controller:
+(
+    if test -z "${p[$1]}"; then
+	echo "[$1 undefined]"
+    else
+	echo ${p[$1]}
+	killall hos_sendosc
+    # upload preset:
+	for k in `echo ${p[$1]}`; do
+	    cat presets/$k
+	    echo ""
+	done | envsubst | hos_sendosc osc.udp://localhost:9877/
+    fi
+) &
+(
+    if test -z "${c[$1]}"; then
+	echo "cmd $1 undefined"
+    else
+	echo ${c[$1]}
+	bash -l -c "${c[$1]}"
+    fi
+) &

@@ -1,0 +1,126 @@
+<?xml version="1.0"?>
+<session license="CC BY-SA 3.0" attribution="Giso Grimm" duration="1800">
+
+  <!-- main scene, for the audience: -->
+  <scene name="hos" guiscale="14.1421356237" ismorder="1">
+
+    <!-- five sources, one for each muscian: -->
+    <source name="hille" color="#ff0000"> 
+      <orientation>0 0 0 0</orientation>
+      <sound connect="hille:out" maxdist="20" gainmodel="1" layers="1"/>
+    </source>
+    <source name="julia" color="#ccff00"> 
+      <orientation>0 72 0 0</orientation>
+      <sound connect="julia:out" maxdist="20" gainmodel="1" layers="1"/>
+    </source>
+    <source name="marthe" color="#00ff66"> 
+      <orientation>0 144 0 0</orientation>
+      <sound connect="marthe:out" maxdist="20" gainmodel="1" layers="1"/>
+    </source>
+    <source name="claas" color="#0066ff"> 
+      <orientation>0 -144 0 0</orientation>
+      <sound connect="claas:out" maxdist="20" gainmodel="1" layers="1"/>
+    </source>
+    <source name="giso" color="#cc00ff"> 
+      <orientation>0 -72 0 0</orientation>
+      <sound connect="giso:out" maxdist="20" gainmodel="1" layers="1"/>
+    </source>
+
+    <!-- one receiver, to render the loudspeaker signals and spatial post-processing: -->
+    <receiver name="outp" type="hoa2d_fuma_hos" order="2" caliblevel="108" delaycomp="0.1" layers="1"/>
+  </scene>
+  
+  <!-- monitor section, one scene for each musician: -->
+  <scene name="monitor_hille" guiscale="10" ismorder="1">
+
+    <!-- this receiver is rendered binaurally to head phones: -->
+    <receiver name="out" type="ortf" color="#ff0000" delaycomp="0.0065" caliblevel="128" mute="true">
+      <position>0 1.2 0 0.5</position>
+      <orientation>0 180 0 0</orientation>
+    </receiver>
+    <include name="monitor.itsc"/>
+  </scene>
+  
+  <scene name="monitor_giso" guiscale="10" ismorder="1">
+    <receiver name="out" type="ortf" color="#cc00ff" delaycomp="0.0065" caliblevel="128" mute="true">
+      <position>0 -0.97082 -0.705342 0.5</position>
+      <orientation>0 36 0 0</orientation>
+    </receiver>
+    <include name="monitor.itsc"/>
+  </scene>
+  
+  <!-- more monitor sections for the other musicians would come here... -->
+
+
+  
+  <!-- external modules for reverberation and spatialization interface -->
+  <modules>
+    
+    <!-- gain controllers for input signals -->
+    <route name="bp_hille" channels="1" gain="-7.5"/>
+    <route name="bp_julia" channels="1" gain="2.1"/>
+    <route name="bp_marthe" channels="1"/>
+    <route name="bp_claas" channels="1"/>
+    <route name="bp_giso" channels="1" gain="2"/>
+    
+    <!-- signal modification -->
+    <hossustain id="hille" wlen="32768" wet="0" tau_sustain="1" tau_envelope="1"/>
+    <hossustain id="julia" wlen="32768" wet="0" tau_sustain="1" tau_envelope="1"/>
+    <hossustain id="marthe" wlen="32768" wet="0" tau_sustain="1" tau_envelope="1"/>
+    <hossustain id="claas" wlen="32768" wet="0" tau_sustain="1" tau_envelope="1"/>
+    <hossustain id="giso" wlen="32768" wet="0" tau_sustain="1" tau_envelope="1"/>
+
+    <!-- parametric trajector generator: -->
+    <epicycles use_transport="false" actor="/hos/hille" path="/c/hille" targetaddr="osc.udp://localhost:9877/"/>
+    <epicycles use_transport="false" actor="/hos/julia" path="/c/julia" targetaddr="osc.udp://localhost:9877/"/>
+    <epicycles use_transport="false" actor="/hos/marthe" path="/c/marthe" targetaddr="osc.udp://localhost:9877/"/>
+    <epicycles use_transport="false" actor="/hos/claas" path="/c/claas" targetaddr="osc.udp://localhost:9877/"/>
+    <epicycles use_transport="false" actor="/hos/giso" path="/c/giso" targetaddr="osc.udp://localhost:9877/"/>
+
+    <!-- visualization of motion trajectories: -->
+    <tracegui actor="/hos/[!o]*" fps="20" guiscale="2.5" tracelen="3.6" w="400" h="500" x="1400" y="0"/>
+
+    <!-- feedback delay network for reverb: -->
+    <hoafdnrot id="fdnp" amborder="2" fdnorder="7" w="0.5" dw="0.02" t="0.06" dt="0.023" decay="1" damping="0.3" prefilt="true" wet="0.01"/>
+    
+    <!-- graphical user interface for spatialization -->
+    <system command="octave -q --eval 'presetgui;uiwait(gcf)'"/>
+    
+    <!-- instead of microphone signals use pre-recorded signals from audio workstation -->
+    <system command="rm -f ./hos2017/instant.xml ./hos2017/*.pending;/opt/Ardour-5.12.0/bin/ardour5 ./hos2017/hos2017.ardour" onunload="send_osc 3819 /save_state;send_osc 3819 /access_action /Common/Quit;sleep 1" sleep="8"/>
+    
+    <!-- Ambisonics decoder: -->
+    <matrix id="dec" decoder="maxre2d">
+      <input connect="render.hos:outp.0_0" label="in.0_0"/>
+      <input connect="render.hos:outp.1_-1" label="in.1_-1"/>
+      <input connect="render.hos:outp.1_1" label="in.1_1"/>
+      <input connect="render.hos:outp.2_-2" label="in.2_-2"/>
+      <input connect="render.hos:outp.2_2" label="in.2_2"/>
+      <output az="0" label="C" connect="system:playback_3"/>
+      <output az="30" label="L" connect="system:playback_1"/>
+      <output az="110" label="SL" connect="system:playback_5"/>
+      <output az="-110" label="SR" connect="system:playback_6"/>
+      <output az="-30" label="R" connect="system:playback_2"/>
+    </matrix>
+    
+    <!-- head motion tracking interface for WiFi gyroscope (MPU6050 chip): -->
+    <mpu6050track id="/ESP_0BA8DF" actor="/monitor_hille/out" tau="40" scale="-1" mode="gyr" 
+		  gyraxis="1" zaxis="2" zscale="-0.65536" 
+		  calib_start="/monitor_hille/announce/0/ap0/sndfile/loop" calib_end="/monitor_hille/announce/0/ap1/sndfile/loop"/>
+    <mpu6050track id="/ESP_B9C385" actor="/monitor_giso/out" tau="40" scale="1" mode="gyr" 
+		  gyraxis="1" zaxis="2" zscale="-0.65536" 
+		  calib_start="/monitor_giso/announce/0/ap0/sndfile/loop" calib_end="/monitor_giso/announce/0/ap1/sndfile/loop"/>
+    
+  </modules>
+
+  <!-- some jack port connections: -->
+  <connect src="render.monitor_hille:out_[lr]" dest="system:playback_[12]"/>
+  <connect src="render.monitor_giso:out_[lr]" dest="system:playback_[12]"/>
+  <connect src="bp_hille:out.0" dest="hille:in"/>
+  <connect src="bp_julia:out.0" dest="julia:in"/>
+  <connect src="bp_marthe:out.0" dest="marthe:in"/>
+  <connect src="bp_claas:out.0" dest="claas:in"/>
+  <connect src="bp_giso:out.0" dest="giso:in"/>
+  <connect src="render.hos:outp.a.*" dest="fdnp:in\..*"/>
+  <connect src="fdnp:out\..*" dest="dec:in\..*"/>
+</session>

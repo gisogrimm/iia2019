@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<layout caliblevel="128" diffusegain="12">
+  <speaker az="0" label="C" connect="system:playback_3"/>
+  <speaker az="30" label="L" connect="system:playback_1"/>
+  <speaker az="110" label="SL" connect="system:playback_5"/>
+  <speaker az="-110" label="SR" connect="system:playback_6"/>
+  <speaker az="-30" label="R" connect="system:playback_2"/>
+</layout>

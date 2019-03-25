@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<scene license="CC BY-SA 3.0" attribution="Giso Grimm">
+  <source name="hille" color="#ff0000">
+    <position>0 1 0 0</position>
+    <orientation>0 180 0 0</orientation>
+    <sound connect="bp_hille:out.0" x="0.2" maxdist="120"/>
+  </source>
+  <source name="julia" color="#ccff00">
+    <position>0 -0.81 0.59 0</position>
+    <orientation>0 324 0 0</orientation>
+    <sound connect="bp_julia:out.0" x="0.2" maxdist="120"/>
+  </source>
+  <source name="marthe" color="#00ff66">
+    <position>0 0.31 -0.95 0</position>
+    <orientation>0 108 0 0</orientation>
+    <sound connect="bp_marthe:out.0" x="0.2" maxdist="120"/>
+  </source>
+  <source name="claas" color="#0066ff">
+    <position>0 0.31 0.95 0</position>
+    <orientation>0 252 0 0</orientation>
+    <sound connect="bp_claas:out.0" x="0.2" maxdist="120"/>
+  </source>
+  <source name="giso" color="#cc00ff">
+    <position>0 -0.81 -0.59 0</position>
+    <orientation>0 36 0 0</orientation>
+    <sound connect="bp_giso:out.0" x="0.2" maxdist="120"/>
+  </source>
+  <source name="announce">
+    <position>0 0 0 0</position>
+    <sound maxdist="120">
+      <plugins>
+	<sndfile name="akkord_up.wav" level="60" triggered="true" transport="false"/>
+	<sndfile name="akkord_down.wav" level="60" triggered="true" transport="false"/>
+      </plugins>
+    </sound>
+  </source>
+  <facegroup name="raum" importraw="monitor/raum_raum1.raw" reflectivity="1" damping="0.3"/>
+</scene>

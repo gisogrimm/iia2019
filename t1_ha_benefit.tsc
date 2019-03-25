@@ -1,0 +1,116 @@
+<?xml version="1.0"?>
+<session duration="180" loop="true" license="CC BY-SA 3.0" attribution="Giso Grimm" levelmeter_tc="5">
+
+  <scene guiscale="20" ismorder="2">
+
+    <!-- target source -->
+    <source name="target" color="#00ff00">
+      <sound layers="1">
+	<plugins>
+	  <sndfile name="f1_script1_clean.wav" level="65" loop="0"/>
+	</plugins>
+      </sound>
+      <position>0 2 1 0</position>
+    </source>
+
+    <!-- noise source -->
+    <source name="distractor" color="#ff0000">
+      <sound layers="2">
+	<plugins>
+	  <sndfile name="m2_script2_clean.wav" level="65" loop="0"/>
+	</plugins>
+      </sound>
+      <position>0 -2 -1 0</position>
+    </source>
+
+    <!-- diffuse noise sound field -->
+    <diffuse name="birds" layers="2" size="20 20 20" color="#ff0000">
+      <plugins>
+	<sndfile name="/usr/share/tascar/examples/sounds/birds.wav" level="50" loop="0"/>
+      </plugins>
+    </diffuse>
+
+    <!-- simple room acoustic model using a shoebox shaped room: -->
+    <facegroup name="room" shoebox="12 7 3"/>
+
+    <!-- combined signal: -->
+    <receiver name="out_direct" type="vbap" layout="layout_5ch.spk" mute="true"/>
+
+    <!-- TARGET signal -->
+    <receiver name="out_S" layout="16ch.spk" layers="1" type="hoa2d" maxre="true"/>
+    <!-- NOISE signal -->
+    <receiver name="out_N" layout="16ch.spk" layers="2" type="hoa2d" maxre="true"/>
+  </scene>
+
+  
+  <modules>
+    <!-- level meter for SNR display: -->
+    <route name="levels" channels="8"/>
+
+    <!-- mixer strip for auralization of hearing aid output: -->
+    <route name="monitor_ha" channels="2" gain="-40" mute="false" caliblevel="128"/>
+
+    <!-- HRIR convolution, to generate HA signals (S and N separately): -->
+    <hrirconv id="conv_S" fftlen="2048" inchannels="16" outchannels="4" autoconnect="false" hrirfile="glab_hrir.wav" connect="render.scene:out_S.*"/>
+    <hrirconv id="conv_N" fftlen="2048" inchannels="16" outchannels="4" autoconnect="false" hrirfile="glab_hrir.wav" connect="render.scene:out_N.*"/>
+
+    <!-- openMHA for HA signal processing, two instances: -->
+    <system command="mha -p 33337 ?read:openmha/adm.cfg io.name=adm1 cmd=start"/>
+    <system command="mha -p 33338 ?read:openmha/adm.cfg io.name=adm2 cmd=start"/>
+
+    <!-- mixing matrix to generate S+N and S-N: -->
+    <matrix id="mix_in">
+      <input label="unproc_S_fl" connect="conv_S:out_0"/>
+      <input label="unproc_S_fr" connect="conv_S:out_1"/>
+      <input label="unproc_S_rl" connect="conv_S:out_2"/>
+      <input label="unproc_S_rr" connect="conv_S:out_3"/>
+      <input label="unproc_N_fl" connect="conv_N:out_0"/>
+      <input label="unproc_N_fr" connect="conv_N:out_1"/>
+      <input label="unproc_N_rl" connect="conv_N:out_2"/>
+      <input label="unproc_N_rr" connect="conv_N:out_3"/>
+      <output label="SpN_0" m="1 0 0 0 1 0 0 0"/>
+      <output label="SpN_1" m="0 1 0 0 0 1 0 0"/>
+      <output label="SpN_2" m="0 0 1 0 0 0 1 0"/>
+      <output label="SpN_3" m="0 0 0 1 0 0 0 1"/>
+      <output label="SmN_0" m="1 0 0 0 -1 0 0 0"/>
+      <output label="SmN_1" m="0 1 0 0 0 -1 0 0"/>
+      <output label="SmN_2" m="0 0 1 0 0 0 -1 0"/>
+      <output label="SmN_3" m="0 0 0 1 0 0 0 -1"/>
+    </matrix>
+
+    <!-- mixing matrix to get estimate of processed S and processed N: -->
+    <matrix id="mix_out">
+      <input label="proc1_l" connect="adm1:out_1"/>
+      <input label="proc1_r" connect="adm1:out_2"/>
+      <input label="proc2_l" connect="adm2:out_1"/>
+      <input label="proc2_r" connect="adm2:out_2"/>
+      <output label="S_out_l" m="0.5 0 0.5 0"/>
+      <output label="S_out_r" m="0 0.5 0 0.5"/>
+      <output label="N_out_l" m="-0.5 0 0.5 0"/>
+      <output label="N_out_r" m="0 -0.5 0 0.5"/>
+    </matrix>
+
+    <!-- send levels of level meter to visualization: -->
+    <levels2osc pattern="/levels"/>
+
+    <!-- start MATLAB or GNU/Octave for visualization: -->
+    <!--<system command="matlab -nodesktop -nosplash -r compute_SNR"/>-->
+    <system command="octave --no-gui --silent compute_SNR.m"/>
+
+    <!-- simple motion controller to move listener: -->
+    <simplecontroller actor="/*/out_*"/>
+  </modules>
+
+  <!-- connect inputs of hearing aids: -->
+  <connect src="mix_in:SpN_[0-3]" dest="adm1:in_[1-4]"/>
+  <connect src="mix_in:SmN_[0-3]" dest="adm2:in_[1-4]"/>
+  <!-- connect level meter -->
+  <connect src="conv_S:out_[0-1]" dest="levels:in\.[0-1]"/>
+  <connect src="conv_N:out_[0-1]" dest="levels:in\.[2-3]"/>
+  <connect src="mix_out:S_out_[lr]" dest="levels:in\.[4-5]"/>
+  <connect src="mix_out:N_out_[lr]" dest="levels:in\.[6-7]"/>
+  <!-- connect HA to outputs -->
+  <connect src="adm1:out_[12]" dest="monitor_ha:in\.[01]"/>
+  <connect src="monitor_ha:out\.[01]" dest="system:playback_[12]"/>
+  
+</session>

@@ -1,0 +1,13 @@
+*~
+*.blend1
+*.blend2
+*.bak
+*.history
+*.pending
+instant.xml
+interchange
+peaks
+*.mex
+*.mexa64
+*.o
+octave-workspace

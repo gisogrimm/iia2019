@@ -1,0 +1,35 @@
+/hos/out*/fade 0 0.8
+,1.1
+/c/*/f 0
+/c/*/r 0.5
+/c/*/theta 0
+/c/*/e 0
+/c/*/f_epi 0
+/c/*/r_epi 0
+/c/*/phi0_epi 0
+/c/*/random 0
+
+/c/hille/phi0 0
+/c/julia/phi0 -72
+/c/marthe/phi0 -144
+/c/claas/phi0 144
+/c/giso/phi0 72
+
+/c/*/apply 0.8
+/c/*/locate 0.8
+
+/c/*/sustain/tau_env 1
+/c/*/sustain/tau_sus 1
+/c/*/sustain/wet 0
+/c/*/sustain/wetapply 1
+
+/monitor_*/announce/0/ap0/metronome/bypass 1
+/monitor_*/*/mute 0
+
+,4
+
+/fdn*/dry 0
+/fdn*/wet 0.4
+/fdn*/logdelays 1
+/fdn*/par 0 1.8 0.11 0.027 0.4 0.5
+

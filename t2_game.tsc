@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<session duration="180" loop="true" license="CC BY-SA 3.0" attribution="Giso Grimm" levelmeter_tc="5">
+  
+  <scene guiscale="20" ismorder="2">
+
+    <!-- "green" source -->
+    <source name="target" color="#00ff00">
+      <sound>
+	<plugins>
+	  <sndfile name="f1_script1_clean.wav" level="65" loop="0"/>
+	</plugins>
+      </sound>
+      <!-- move on a square around the center: -->
+      <position loop="8">0 2 2 0
+      2 2 -2 0
+      4 -2 -2 0
+      6 -2 2 0
+      8 2 2 0
+      </position>
+    </source>
+
+    <!-- "red" source, will be controlled by game engine: -->
+    <source name="Suzanne" color="#ff0000">
+      <sound type="cardioidmod">
+	<plugins>
+	  <sndfile name="m2_script2_clean.wav" level="65" loop="0"/>
+	</plugins>
+      </sound>
+    </source>
+
+    <!-- diffuse sound field -->
+    <diffuse name="birds" size="20 20 20" color="#ff0000">
+      <plugins>
+	<sndfile name="/usr/share/tascar/examples/sounds/birds.wav" level="50" loop="0"/>
+      </plugins>
+    </diffuse>
+    
+    <!-- simple room acoustic model using a shoebox shaped room: -->
+    <facegroup name="room" shoebox="12 7 3"/>
+
+    <!-- render for 5.0 speaker layout: -->
+    <receiver name="out" type="vbap" layout="layout_5ch.spk"/>
+    
+  </scene>
+
+  
+  <modules>
+
+    <!-- send positions from TASCAR to game engine: -->
+    <pos2osc pattern="/*/[a-z]*" url="osc.udp://localhost:9999/" mode="3" transport="false"/>
+
+    <!-- control position of receiver in TASCAR: -->
+    <simplecontroller actor="/*/out"/>
+
+    <!-- start the game engine: -->
+    <system command="/opt/blender-2.79b-linux-glibc219-x86_64/blenderplayer game.blend" onunload="killall -9 blenderplayer"/>
+    
+  </modules>
+  
+</session>

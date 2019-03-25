@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<session license="CC0">
+  <scene>
+    <source mute="true">
+      <sound x="1">
+	<plugins>
+	  <pink level="70"/>
+	</plugins>
+      </sound>
+    </source>
+    <diffuse mute="true">
+	<plugins>
+	  <pink level="70"/>
+	</plugins>
+    </diffuse>
+    <receiver type="vbap" layout="layout_5ch.spk"/>
+  </scene>
+</session>
