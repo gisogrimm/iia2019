@@ -21,7 +21,7 @@
     </source>
 
     <!-- receiver definition -->
-    <receiver type="hoa2d" maxre="true" layout="layout_5ch.spk">
+    <receiver type="vbap" maxre="true" layout="layout_5ch.spk">
 
       <!--
       <orientation>0 0 0 0
