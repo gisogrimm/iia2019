@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<session license="CC0">
+
+  <!-- definition of a virtual acoustic environment -->
+  <scene ismorder="3">
+
+    <!-- sound source -->
+    <source>
+
+      <!-- trajectory definition -->
+      <position>0 1 -8 0
+      10 1 8 0</position>
+
+      <!-- sound vertex -->
+      <sound x="1">
+	<plugins>
+	  <sndfile name="f1_script1_clean.wav" level="70" loop="0"/>
+	</plugins>
+      </sound>
+      
+    </source>
+
+    <!-- receiver definition -->
+    <receiver type="hoa2d" maxre="true" layout="layout_5ch.spk">
+
+      <!--
+      <orientation>0 0 0 0
+      10 7200 0 0</orientation>
+      -->
+      
+    </receiver>
+
+    <!-- very basic room simulation: -->
+    <facegroup shoebox="22 17 3"/>
+    
+  </scene>
+  
+</session>
